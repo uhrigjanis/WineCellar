@@ -1,274 +1,159 @@
-var getStoredWines = function () {
-    var data = localStorage.getItem('wines');
-    return data ? JSON.parse(data) : [];
+const getStoredWines = () => {
+  const data = localStorage.getItem('wines');
+  return data ? JSON.parse(data) : [];
 };
 
-var WineCellar = function () {
-    var [wines, setWines] = React.useState(getStoredWines());
-    var [newWine, setNewWine] = React.useState({
-        name: '',
-        vintage: '',
-        varietal: '',
-        region: '',
-        quantity: '',
-        price: '',
-        fit: ''
-    });
+const WineCellar = () => {
+  const [wines, setWines] = React.useState(getStoredWines());
+  const [newWine, setNewWine] = React.useState({
+    name: '',
+    vintage: '',
+    varietal: '',
+    region: '',
+    quantity: '', // Menge kann positiv oder negativ sein
+    price: '',
+    fit: ''
+  });
 
-    // Filter- und Suchzustände
-    var [searchTerm, setSearchTerm] = React.useState('');
-    var [sortKey, setSortKey] = React.useState('name');
-    var [sortOrder, setSortOrder] = React.useState('asc');
-    var [filterVintage, setFilterVintage] = React.useState('');
+  // Synchronisiere Local Storage mit den aktuellen Weindaten
+  React.useEffect(() => {
+    localStorage.setItem('wines', JSON.stringify(wines));
+  }, [wines]);
 
-    React.useEffect(function () {
-        localStorage.setItem('wines', JSON.stringify(wines));
-    }, [wines]);
+  const handleChange = (e) => {
+    setNewWine({ ...newWine, [e.target.name]: e.target.value });
+  };
 
-    var handleChange = function (e) {
-        setNewWine({
-            ...newWine,
-            [e.target.name]: e.target.value
-        });
-    };
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!newWine.name || !newWine.vintage || !newWine.quantity) {
+      alert('Bitte füllen Sie alle erforderlichen Felder aus, inklusive Menge!');
+      return;
+    }
 
-    var handleSubmit = function (e) {
-        e.preventDefault();
-        if (!newWine.name || !newWine.vintage) {
-            alert('Bitte füllen Sie alle erforderlichen Felder aus!');
-            return;
+    // Überprüfe, ob der Wein bereits existiert
+    const existingWineIndex = wines.findIndex(wine => wine.name.toLowerCase() === newWine.name.toLowerCase());
+
+    if (existingWineIndex !== -1) {
+      // Wenn der Wein bereits existiert, aktualisiere ihn
+      const updatedWines = wines.map((wine, index) => {
+        if (index === existingWineIndex) {
+          const updatedQuantity = parseInt(wine.quantity) + parseInt(newWine.quantity); // Menge addieren/subtrahieren
+
+          // Wenn die neue Menge kleiner oder gleich 0 ist, löschen wir den Wein
+          if (updatedQuantity <= 0) {
+            return null;
+          }
+
+          return { ...wine, quantity: updatedQuantity }; // Menge aktualisieren
         }
-        var wineToAdd = {
-            ...newWine,
-            id: Date.now()
-        };
-        setWines([...wines, wineToAdd]);
-        setNewWine({
-            name: '',
-            vintage: '',
-            varietal: '',
-            region: '',
-            quantity: '',
-            price: '',
-            fit: ''
-        });
-    };
+        return wine;
+      }).filter(Boolean); // Filtere Weine, deren Menge <= 0 ist
 
-    var handleDelete = function (id) {
-        setWines(wines.filter(function (wine) {
-            return wine.id !== id;
-        }));
-    };
+      setWines(updatedWines);
+      alert('Weinmenge wurde aktualisiert.');
+    } else {
+      // Wenn der Wein nicht existiert, füge ihn hinzu
+      const wineToAdd = { ...newWine, id: Date.now() };
+      setWines([...wines, wineToAdd]);
+      alert('Neuer Wein wurde hinzugefügt.');
+    }
 
-    // Sortierlogik
-    var sortWines = function (wines) {
-        return wines.sort(function (a, b) {
-            var aValue = a[sortKey].toString().toLowerCase();
-            var bValue = b[sortKey].toString().toLowerCase();
-            if (aValue < bValue) return sortOrder === 'asc' ? -1 : 1;
-            if (aValue > bValue) return sortOrder === 'asc' ? 1 : -1;
-            return 0;
-        });
-    };
+    setNewWine({ name: '', vintage: '', varietal: '', region: '', quantity: '', price: '', fit: '' });
+  };
 
-    // Gefilterte und sortierte Weine
-    var filteredWines = sortWines(
-        wines.filter(function (wine) {
-            return wine.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
-                (filterVintage ? wine.vintage === filterVintage : true);
-        })
-    );
+  const handleDelete = (id) => {
+    setWines(wines.filter((wine) => wine.id !== id));
+  };
 
-    var handleSearch = function (e) {
-        setSearchTerm(e.target.value);
-    };
-
-    var handleSortChange = function (e) {
-        setSortKey(e.target.value);
-    };
-
-    var handleSortOrderChange = function (e) {
-        setSortOrder(e.target.value);
-    };
-
-    var handleFilterVintage = function (e) {
-        setFilterVintage(e.target.value);
-    };
-
-    return ( <
-        div >
-        <
-        h1 > Weinkeller < /h1>
-
-        {
-            /* Sucheingabe */ } <
-        input type = "text"
-        placeholder = "Suche nach Name"
-        value = {
-            searchTerm
-        }
-        onChange = {
-            handleSearch
-        }
+  return (
+    <div className="wine-cellar">
+      <h1>Weinkeller</h1>
+      <form onSubmit={handleSubmit} className="wine-form">
+        <input
+          name="name"
+          value={newWine.name}
+          onChange={handleChange}
+          placeholder="Name"
+          required
         />
-
-        {
-            /* Filter nach Jahrgang */ } <
-        input type = "text"
-        placeholder = "Filter nach Jahrgang"
-        value = {
-            filterVintage
-        }
-        onChange = {
-            handleFilterVintage
-        }
+        <input
+          name="vintage"
+          value={newWine.vintage}
+          onChange={handleChange}
+          placeholder="Jahrgang"
+          required
         />
+        <input
+          name="varietal"
+          value={newWine.varietal}
+          onChange={handleChange}
+          placeholder="Sorte"
+        />
+        <input
+          name="region"
+          value={newWine.region}
+          onChange={handleChange}
+          placeholder="Region"
+        />
+        <input
+          name="quantity"
+          value={newWine.quantity}
+          onChange={handleChange}
+          placeholder="Menge (positiv zum Hinzufügen, negativ zum Entfernen)"
+          required
+        />
+        <input
+          name="price"
+          value={newWine.price}
+          onChange={handleChange}
+          placeholder="Preis"
+        />
+        <input
+          name="fit"
+          value={newWine.fit}
+          onChange={handleChange}
+          placeholder="Passt zu"
+        />
+        <button type="submit" className="add-button">Wein hinzufügen / aktualisieren</button>
+      </form>
 
-        {
-            /* Sortieroptionen */ } <
-        select value = {
-            sortKey
-        }
-        onChange = {
-            handleSortChange
-        } >
-        <
-        option value = "name" > Name < /option> <
-        option value = "vintage" > Jahrgang < /option> <
-        option value = "varietal" > Sorte < /option> <
-        option value = "region" > Region < /option> <
-        option value = "price" > Preis < /option> <
-        option value = "fit" > Passt zu < /option> <
-        /select>
-
-        {
-            /* Sortierreihenfolge */ } <
-        select value = {
-            sortOrder
-        }
-        onChange = {
-            handleSortOrderChange
-        } >
-        <
-        option value = "asc" > Aufsteigend < /option> <
-        option value = "desc" > Absteigend < /option> <
-        /select>
-
-        {
-            /* Formular zur Weinhinzufügung */ } <
-        form onSubmit = {
-            handleSubmit
-        } >
-        <
-        input name = "name"
-        value = {
-            newWine.name
-        }
-        onChange = {
-            handleChange
-        }
-        placeholder = "Name"
-        required /
-        >
-        <
-        input name = "vintage"
-        value = {
-            newWine.vintage
-        }
-        onChange = {
-            handleChange
-        }
-        placeholder = "Jahrgang"
-        required /
-        >
-        <
-        input name = "varietal"
-        value = {
-            newWine.varietal
-        }
-        onChange = {
-            handleChange
-        }
-        placeholder = "Sorte" /
-        >
-        <
-        input name = "region"
-        value = {
-            newWine.region
-        }
-        onChange = {
-            handleChange
-        }
-        placeholder = "Region" /
-        >
-        <
-        input name = "quantity"
-        value = {
-            newWine.quantity
-        }
-        onChange = {
-            handleChange
-        }
-        placeholder = "Menge" /
-        >
-        <
-        input name = "price"
-        value = {
-            newWine.price
-        }
-        onChange = {
-            handleChange
-        }
-        placeholder = "Preis" /
-        >
-        <
-        input name = "fit"
-        value = {
-            newWine.fit
-        }
-        onChange = {
-            handleChange
-        }
-        placeholder = "Passt zu" /
-        >
-        <
-        button type = "submit" > Wein hinzufügen < /button> <
-        /form>
-
-        {
-            /* Liste der Weine */ } <
-        ul > {
-            filteredWines.map(function (wine) {
-                return ( <
-                    li key = {
-                        wine.id
-                    } > {
-                        wine.name
-                    } - {
-                        wine.vintage
-                    } - {
-                        wine.varietal
-                    } - {
-                        wine.region
-                    } - {
-                        wine.quantity
-                    }
-                    Flaschen - {
-                        wine.price
-                    } € - {
-                        wine.fit
-                    } <
-                    button onClick = {
-                        () => handleDelete(wine.id)
-                    } > Löschen < /button> <
-                    /li>
-                );
-            })
-        } <
-        /ul> <
-        /div>
-    );
+      <table className="wine-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Jahrgang</th>
+            <th>Sorte</th>
+            <th>Region</th>
+            <th>Menge</th>
+            <th>Preis</th>
+            <th>Passt zu</th>
+            <th>Aktion</th>
+          </tr>
+        </thead>
+        <tbody>
+          {wines.map((wine) => (
+            <tr key={wine.id}>
+              <td>{wine.name}</td>
+              <td>{wine.vintage}</td>
+              <td>{wine.varietal}</td>
+              <td>{wine.region}</td>
+              <td>{wine.quantity} Flaschen</td>
+              <td>{wine.price} €</td>
+              <td>{wine.fit}</td>
+                
+              <td>
+                <button onClick={() => handleDelete(wine.id)} className="delete-button">
+                  Löschen
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
 };
 
 // Rendere die React App
-ReactDOM.render( < WineCellar / > , document.getElementById('root'));
+ReactDOM.render(<WineCellar />, document.getElementById('root'));

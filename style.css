@@ -1,39 +1,81 @@
-input {
-  margin: 5px;
-  padding: 5px;
-  width: 150px;
+body {
+  font-family: 'Arial', sans-serif;
+  background-color: #f7f7f7;
+  padding: 20px;
 }
 
-select {
-  margin: 5px;
-  padding: 5px;
+.wine-cellar {
+  max-width: 800px;
+  margin: 0 auto;
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-form {
-  margin-top: 20px;
+h1 {
+  text-align: center;
+  color: #333;
+}
+
+.wine-form {
   display: flex;
-  flex-direction: column;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
 }
 
-button {
-  padding: 5px 10px;
-  margin-top: 10px;
+.wine-form input {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
 }
 
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-
-li {
-  margin: 10px 0;
-  display: flex;
-  justify-content: space-between;
-}
-
-button {
-  background-color: red;
+.add-button {
+  padding: 10px 20px;
+  background-color: #4CAF50;
   color: white;
   border: none;
-  padding: 5px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.add-button:hover {
+  background-color: #45a049;
+}
+
+.wine-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.wine-table th, .wine-table td {
+  padding: 12px 15px;
+  border: 1px solid #ddd;
+  text-align: left;
+}
+
+.wine-table th {
+  background-color: #f4f4f4;
+}
+
+.wine-table tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.delete-button {
+  background-color: #e74c3c;
+  color: white;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.delete-button:hover {
+  background-color: #c0392b;
 }
