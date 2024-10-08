@@ -1,59 +1,66 @@
+/* Allgemeines Styling */
 body {
-  font-family: 'Arial', sans-serif;
-  background-color: #f7f7f7;
-  padding: 20px;
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f4f4f4;
+  color: #333;
 }
 
 .wine-cellar {
-  max-width: 800px;
-  margin: 0 auto;
-  background-color: white;
+  max-width: 800px; /* Breite auf 800px begrenzen */
+  margin: 20px auto;
   padding: 20px;
+  background-color: white;
   border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 h1 {
   text-align: center;
-  color: #333;
+  color: #5a5a5a;
 }
 
+/* Formular-Styling */
 .wine-form {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid; /* Flexbox durch Grid ersetzen für bessere Flexibilität */
+  grid-template-columns: 1fr 1fr; /* Zwei Spalten */
   gap: 10px;
-  margin-bottom: 20px;
 }
 
-.wine-form input {
-  flex: 1;
+.wine-form input,
+.wine-form select {
+  width: 100%; /* Eingabefelder füllen den verfügbaren Platz aus */
   padding: 10px;
-  border: 1px solid #ccc;
+  margin: 5px 0;
+  border: 1px solid #ddd;
   border-radius: 5px;
-  font-size: 16px;
 }
 
-.add-button {
-  padding: 10px 20px;
-  background-color: #4CAF50;
+.wine-form button {
+  grid-column: span 2; /* Button über beide Spalten */
+  padding: 12px;
+  background-color: #5a5a5a;
   color: white;
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
 }
 
-.add-button:hover {
-  background-color: #45a049;
+.wine-form button:hover {
+  background-color: #444;
 }
 
+/* Tabelle Styling */
 .wine-table {
   width: 100%;
   border-collapse: collapse;
+  margin-top: 20px;
 }
 
-.wine-table th, .wine-table td {
-  padding: 12px 15px;
+.wine-table th,
+.wine-table td {
+  padding: 12px;
   border: 1px solid #ddd;
   text-align: left;
 }
@@ -66,16 +73,31 @@ h1 {
   background-color: #f9f9f9;
 }
 
-.delete-button {
-  background-color: #e74c3c;
-  color: white;
-  padding: 5px 10px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
+/* Responsive Design für mobile Geräte */
+@media (max-width: 600px) {
+  .wine-form {
+    grid-template-columns: 1fr; /* Einspaltiges Layout */
+  }
 
-.delete-button:hover {
-  background-color: #c0392b;
+  .wine-table th, .wine-table td {
+    display: block; /* Block-Layout für die Tabellenzellen */
+    text-align: right; /* Text rechtsbündig */
+  }
+
+  .wine-table th {
+    display: none; /* Tabellenköpfe ausblenden */
+  }
+
+  .wine-table tr {
+    margin-bottom: 15px; /* Abstand zwischen den Zeilen */
+    border: 1px solid #ddd; /* Rahmen für mobile Ansicht */
+    border-radius: 5px;
+    background-color: white; /* Hintergrundfarbe für Zeilen */
+  }
+
+  .wine-table td:before {
+    content: attr(data-label); /* Tabellenüberschrift in Zellen anzeigen */
+    font-weight: bold;
+    text-align: left; /* Text linksbündig */
+  }
 }
