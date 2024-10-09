@@ -9,7 +9,13 @@ const wineRegions = {
   Germany: ['Mosel', 'Rheingau', 'Pfalz', 'Franken', 'Baden', 'Ahr'],
   Italy: ['Tuscany', 'Piedmont', 'Sicily', 'Veneto', 'Lombardy', 'Trentino-Alto Adige'],
   Austria: ['Wachau', 'Burgenland', 'Steiermark', 'Niederösterreich'],
-  Spain: ['Rioja', 'Ribera del Duero', 'Priorat', 'Penedès', 'Galicia', 'Navarra']
+  Spain: ['Rioja', 'Ribera del Duero', 'Priorat', 'Penedès', 'Galicia', 'Navarra'],
+  Slovakia: ['Small Carpathians', 'Tokaj', 'Nitra', 'Južnoslovenská', 'Stredoslovenská', 'Východoslovenská'],
+  Czechia: ['Moravia', 'Bohemia'],
+  SouthAfrica: ['Stellenbosch', 'Paarl', 'Swartland', 'Constantia', 'Walker Bay', 'Franschhoek'],
+  Australia: ['Barossa Valley', 'Hunter Valley', 'Yarra Valley', 'Margaret River', 'McLaren Vale', 'Clare Valley'],
+  NewZealand: ['Marlborough', 'Hawke\'s Bay', 'Central Otago', 'Wairarapa', 'Nelson', 'Canterbury']
+
 };
 
 // Liste der Speisen oder Kategorien für "Passt zu"
