@@ -1,28 +1,6 @@
-const getStoredWines = () => {
-    const data = localStorage.getItem('wines');
-    return data ? JSON.parse(data) : [];
-};
-
-// Liste der Weinanbaugebiete
-const wineRegions = {
-    France: ['Bordeaux', 'Burgundy', 'Champagne', 'Loire Valley', 'Alsace', 'Provence'],
-    Germany: ['Mosel', 'Rheingau', 'Pfalz', 'Franken', 'Baden', 'Ahr'],
-    Italy: ['Tuscany', 'Piedmont', 'Sicily', 'Veneto', 'Lombardy', 'Trentino-Alto Adige'],
-    Austria: ['Wachau', 'Burgenland', 'Steiermark', 'Niederösterreich'],
-    Spain: ['Rioja', 'Ribera del Duero', 'Priorat', 'Penedès', 'Galicia', 'Navarra'],
-    Slovakia: ['Small Carpathians', 'Tokaj', 'Nitra', 'Južnoslovenská', 'Stredoslovenská', 'Východoslovenská'],
-    Czechia: ['Moravia', 'Bohemia'],
-    SouthAfrica: ['Stellenbosch', 'Paarl', 'Swartland', 'Constantia', 'Walker Bay', 'Franschhoek'],
-    Australia: ['Barossa Valley', 'Hunter Valley', 'Yarra Valley', 'Margaret River', 'McLaren Vale', 'Clare Valley'],
-    NewZealand: ['Marlborough', 'Hawke\'s Bay', 'Central Otago', 'Wairarapa', 'Nelson', 'Canterbury']
-};
-
-const wineTypes = ['Rotwein', 'Weißwein', 'Rosé', 'Champagner', 'Sekt', 'Dessertwein', 'Portwein'];
-
-const foodPairings = ['Rindfleisch', 'Geflügel', 'Fisch', 'Käse', 'Pasta', 'Desserts', 'Vegetarisch', 'Meeresfrüchte'];
-
 const WineCellar = () => {
     const [wines, setWines] = React.useState(getStoredWines());
+    
     const [newWine, setNewWine] = React.useState({
         name: '',
         vintage: '',
@@ -35,8 +13,9 @@ const WineCellar = () => {
         dateStored: '',
         winemaker: ''
     });
-    const [selectedCountry, setSelectedCountry] = React.useState('France');
 
+    
+    
     React.useEffect(() => {
         localStorage.setItem('wines', JSON.stringify(wines));
     }, [wines]);
@@ -55,37 +34,12 @@ const WineCellar = () => {
             return;
         }
 
-        const existingWineIndex = wines.findIndex(wine => wine.name.toLowerCase() === newWine.name.toLowerCase());
-
-        if (existingWineIndex !== -1) {
-            const updatedWines = wines.map((wine, index) => {
-                if (index === existingWineIndex) {
-                    const updatedQuantity = parseInt(wine.quantity) + parseInt(newWine.quantity);
-                    if (updatedQuantity <= 0) {
-                        return null;
-                    }
-                    return {
-                        ...wine,
-                        quantity: updatedQuantity,
-                        region: newWine.region,
-                        pairing: newWine.pairing,
-                        dateStored: newWine.dateStored,
-                        winemaker: newWine.winemaker
-                    };
-                }
-                return wine;
-            }).filter(Boolean);
-
-            setWines(updatedWines);
-            alert('Weinmenge wurde aktualisiert.');
-        } else {
-            const wineToAdd = {
-                ...newWine,
-                id: Date.now(),
-            };
-            setWines([...wines, wineToAdd]);
-            alert('Neuer Wein wurde hinzugefügt.');
-        }
+        const wineToAdd = {
+            ...newWine,
+            id: Date.now(),
+        };
+        setWines([...wines, wineToAdd]);
+        alert('Neuer Wein wurde hinzugefügt.');
 
         setNewWine({
             name: '',
@@ -104,14 +58,12 @@ const WineCellar = () => {
     const handleDelete = (id) => {
         setWines(wines.filter((wine) => wine.id !== id));
     };
-
-    const handleCountryChange = (e) => {
-        setSelectedCountry(e.target.value);
-        setNewWine({
-            ...newWine,
-            region: ''
-        });
-    };
+    
+    // Formatierte Datumsdarstellung
+    const formatDate = (dateString) => {
+    const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+    return new Date(dateString).toLocaleDateString(undefined, options);
+  };
 
     return (
         <div className="wine-cellar">
@@ -121,91 +73,63 @@ const WineCellar = () => {
                 <input name="name" value={newWine.name} onChange={handleChange} placeholder="Name" required />
                 <input name="vintage" value={newWine.vintage} onChange={handleChange} placeholder="Jahrgang" required />
 
-                {/* Dropdown für Weinsorten */}
+                {/* Dropdown für Weinsorte */}
                 <select name="wineType" value={newWine.wineType} onChange={handleChange} required>
-                    <option value="">Weinsorte auswählen</option>
-                    {wineTypes.map((type) => (
-                        <option key={type} value={type}>
-                            {type}
-                        </option>
-                    ))}
+                    <option value="">Weinsorte wählen</option>
+                    <option value="Rotwein">Rotwein</option>
+                    <option value="Weißwein">Weißwein</option>
+                    <option value="Rosé">Rosé</option>
+                    <option value="Schaumwein">Schaumwein</option>
                 </select>
 
-                <input name="varietal" value={newWine.varietal} onChange={handleChange} placeholder="Sorte" />
-
-                {/* Dropdown für Land */}
-                <select value={selectedCountry} onChange={handleCountryChange}>
-                    <option value="France">Frankreich</option>
-                    <option value="Germany">Deutschland</option>
-                    <option value="Italy">Italien</option>
-                    <option value="Austria">Österreich</option>
-                    <option value="Spain">Spanien</option>
+                {/* Dropdown für Sorte (Varietal) */}
+                <select name="varietal" value={newWine.varietal} onChange={handleChange}>
+                    <option value="">Sorte wählen</option>
+                    <option value="Pinot Noir">Pinot Noir</option>
+                    <option value="Chardonnay">Chardonnay</option>
+                    <option value="Merlot">Merlot</option>
+                    <option value="Cabernet Sauvignon">Cabernet Sauvignon</option>
+                    <option value="Riesling">Riesling</option>
                 </select>
 
-                {/* Dropdown für Anbaugebiet */}
-                <select name="region" value={newWine.region} onChange={handleChange} required>
-                    <option value="" disabled>Wählen Sie ein Anbaugebiet</option>
-                    {wineRegions[selectedCountry].map((region) => (
-                        <option key={region} value={region}>{region}</option>
-                    ))}
-                </select>
-
-                {/* Dropdown für "Passt zu" */}
-                <select name="pairing" value={newWine.pairing} onChange={handleChange} required>
-                    <option value="" disabled>Passt zu</option>
-                    {foodPairings.map((pairing) => (
-                        <option key={pairing} value={pairing}>{pairing}</option>
-                    ))}
-                </select>
-
-                <input name="quantity" value={newWine.quantity} onChange={handleChange} placeholder="Menge (positiv zum Hinzufügen, negativ zum Entfernen)" required />
+                <input name="region" value={newWine.region} onChange={handleChange} placeholder="Region" required />
+                <input name="quantity" value={newWine.quantity} onChange={handleChange} placeholder="Menge" required />
                 <input name="price" value={newWine.price} onChange={handleChange} placeholder="Preis" />
-
-                {/* Eingabefeld für den Einlagerungszeitpunkt */}
+                <input name="pairing" value={newWine.pairing} onChange={handleChange} placeholder="Passt zu" />
                 <input type="datetime-local" name="dateStored" value={newWine.dateStored} onChange={handleChange} required />
 
-                <button type="submit" className="add-button">Wein hinzufügen / aktualisieren</button>
+                <button type="submit" className="add-button">Wein hinzufügen</button>
             </form>
 
-            <table className="wine-table">
-                <thead>
-                    <tr>
-                        <th>Winzer</th>
-                        <th>Name</th>
-                        <th>Jahrgang</th>
-                        <th>Weinsorte</th>
-                        <th>Sorte</th>
-                        <th>Region</th>
-                        <th>Passt zu</th>
-                        <th>Menge</th>
-                        <th>Preis</th>
-                        <th>Zeitpunkt</th>
-                        <th>Aktion</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {wines.map((wine) => (
-                        <tr key={wine.id}>
-                            <td data-label="Winzer">{wine.winemaker}</td>
-                            <td data-label="Name">{wine.name}</td>
-                            <td data-label="Jahrgang">{wine.vintage}</td>
-                            <td data-label="Weinsorte">{wine.wineType}</td>
-                            <td data-label="Sorte">{wine.varietal}</td>
-                            <td data-label="Region">{wine.region}</td>
-                            <td data-label="Passt zu">{wine.pairing}</td>
-                            <td data-label="Menge">{wine.quantity} Flaschen</td>
-                            <td data-label="Preis">{wine.price}€</td>
-                            <td data-label="Zeitpunkt">{wine.dateStored}</td>
-                            <td data-label="Aktion">
-                                <button onClick={() => handleDelete(wine.id)} className="delete-button">Löschen</button>
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
+            <div className="wine-list">
+                {wines.map((wine) => (
+                    <div key={wine.id} className="wine-card">
+                        <img src="/wine-bottle-placeholder.jpg" alt="Weinflasche" /> {/* Placeholder image */}
+                        <h2>{wine.name} ({wine.vintage})</h2>
+                        <div className="wine-details">
+                            <span>Winzer: {wine.winemaker}</span>
+                            <span>Weinsorte: {wine.wineType}</span>
+                            <span>Sorte: {wine.varietal}</span>
+                            <span>Region: {wine.region}</span>
+                            <span>Passt zu: {wine.pairing}</span>
+                            <span>Menge: {wine.quantity}</span>
+                            <span>Preis: {wine.price} €</span>
+                            <span>Gelagert seit: {wine.dateStored}</span>
+                        </div>
+                        <div className="wine-actions">
+                            <span className="price">{wine.price ? `${wine.price} €` : 'Preis nicht angegeben'}</span>
+                            <button onClick={() => handleDelete(wine.id)}>Löschen</button>
+                        </div>
+                    </div>
+                ))}
+            </div>
         </div>
     );
 };
 
-// Rendere die React App
+function getStoredWines() {
+    const storedWines = localStorage.getItem('wines');
+    return storedWines ? JSON.parse(storedWines) : [];
+}
+
 ReactDOM.render(<WineCellar />, document.getElementById('root'));
