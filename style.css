@@ -33,7 +33,7 @@ h1 {
 }
 
 .wine-card {
-  background-color: #fff;
+  background-color: #EDF1EF;
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   padding: 20px;
@@ -79,7 +79,7 @@ h1 {
 
 .wine-actions button {
   padding: 10px 20px;
-  background-color: #007bff;
+  background-color: #DB2827;
   color: white;
   border: none;
   border-radius: 5px;
@@ -87,13 +87,13 @@ h1 {
 }
 
 .wine-actions button:hover {
-  background-color: #0056b3;
+  background-color: #383434;
 }
 
 .wine-actions .price {
   font-weight: bold;
   font-size: 1.2em;
-  color: #333;
+  color: #fff;
 }
 
 /* Responsive adjustments */
