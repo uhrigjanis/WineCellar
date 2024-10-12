@@ -167,43 +167,27 @@ const WineCellar = () => {
                 <button type="submit" className="add-button">Wein hinzufügen / aktualisieren</button>
             </form>
 
-            <table className="wine-table">
-                <thead>
-                    <tr>
-                        <th>Winzer</th>
-                        <th>Name</th>
-                        <th>Jahrgang</th>
-                        <th>Weinsorte</th>
-                        <th>Sorte</th>
-                        <th>Region</th>
-                        <th>Passt zu</th>
-                        <th>Menge</th>
-                        <th>Preis</th>
-                        <th>Zeitpunkt</th>
-                        <th>Aktion</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {wines.map((wine) => (
-                        <tr key={wine.id}>
-                            <td data-label="Winzer">{wine.winemaker}</td>
-                            <td data-label="Name">{wine.name}</td>
-                            <td data-label="Jahrgang">{wine.vintage}</td>
-                            <td data-label="Weinsorte">{wine.wineType}</td>
-                            <td data-label="Sorte">{wine.varietal}</td>
-                            <td data-label="Region">{wine.region}</td>
-                            <td data-label="Passt zu">{wine.pairing}</td>
-                            <td data-label="Menge">{wine.quantity} Flaschen</td>
-                            <td data-label="Preis">{wine.price}€</td>
-                            <td data-label="Zeitpunkt">{wine.dateStored}</td>
-                            <td data-label="Aktion">
-                                <button onClick={() => handleDelete(wine.id)} className="delete-button">Löschen</button>
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
+        <div className="wine-list">
+        {wines.map((wine) => (
+          <div key={wine.id} className="wine-card">
+            <h2>{wine.name} ({wine.vintage})</h2>
+            <div className="wine-details">
+              <span>Winzer: {wine.winemaker}</span>
+              <span>Weinsorte: {wine.wineType}</span>
+              <span>Sorte: {wine.varietal}</span>
+              <span>Region: {wine.region}, {wine.country}</span>
+              <span>Passt zu: {wine.pairing}</span>
+              <span>Menge: {wine.quantity}</span>
+              <span>Preis: {wine.price} €</span>
+              <span>Gelagert seit: {wine.dateStored}</span>
+            </div>
+            <div className="wine-actions">
+              <button onClick={() => handleDelete(wine.id)}>Löschen</button>
+            </div>
+          </div>
+        ))}
         </div>
+    </div>
     );
 };
 
