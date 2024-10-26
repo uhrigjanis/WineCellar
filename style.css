@@ -47,9 +47,12 @@ h1 {
   transform: translateY(-5px);
 }
 
-.wine-card img {
+/* Wine Card Image Styling */
+.wine-card img.wine-image {
   max-width: 100%;
+  height: auto;
   border-radius: 5px;
+  margin-bottom: 10px;
 }
 
 .wine-card h2 {

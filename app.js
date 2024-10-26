@@ -33,9 +33,11 @@ const WineCellar = () => {
         price: '',
         pairing: '',
         dateStored: '',
-        winemaker: ''
+        winemaker: '',
+        image: ''
     });
     const [selectedCountry, setSelectedCountry] = React.useState('France');
+    const [editingWineId, setEditingWineId] = React.useState(null);
 
     React.useEffect(() => {
         localStorage.setItem('wines', JSON.stringify(wines));
@@ -48,6 +50,20 @@ const WineCellar = () => {
         });
     };
 
+    const handleImageChange = (e) => {
+        const file = e.target.files[0];
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            setNewWine({
+                ...newWine,
+                image: reader.result
+            });
+        };
+        if (file) {
+            reader.readAsDataURL(file);
+        }
+    };
+
     const handleSubmit = (e) => {
         e.preventDefault();
         if (!newWine.name || !newWine.vintage || !newWine.wineType || !newWine.quantity || !newWine.region || !newWine.pairing || !newWine.dateStored || !newWine.winemaker) {
@@ -55,22 +71,19 @@ const WineCellar = () => {
             return;
         }
 
-        const existingWineIndex = wines.findIndex(wine => wine.name.toLowerCase() === newWine.name.toLowerCase());
+        const existingWineIndex = wines.findIndex(wine => wine.id === editingWineId);
 
         if (existingWineIndex !== -1) {
-            const updatedWines = wines.map((wine, index) => {
-                if (index === existingWineIndex) {
+            const updatedWines = wines.map((wine) => {
+                if (wine.id === editingWineId) {
                     const updatedQuantity = parseInt(wine.quantity) + parseInt(newWine.quantity);
                     if (updatedQuantity <= 0) {
-                        return null;
+                        return null; // Null zurückgeben, wenn die Menge nicht positiv ist
                     }
                     return {
                         ...wine,
-                        quantity: updatedQuantity,
-                        region: newWine.region,
-                        pairing: newWine.pairing,
-                        dateStored: newWine.dateStored,
-                        winemaker: newWine.winemaker
+                        ...newWine, // Alle neuen Wein-Daten aktualisieren
+                        quantity: updatedQuantity
                     };
                 }
                 return wine;
@@ -87,6 +100,25 @@ const WineCellar = () => {
             alert('Neuer Wein wurde hinzugefügt.');
         }
 
+        resetForm();
+        setEditingWineId(null); // Zurücksetzen der Bearbeitungs-ID
+    };
+
+    const handleDelete = (id) => {
+        const updatedWines = wines.filter((wine) => wine.id !== id);
+        setWines(updatedWines);
+        alert('Wein wurde gelöscht.');
+    };
+
+    const handleCountryChange = (e) => {
+        setSelectedCountry(e.target.value);
+        setNewWine({
+            ...newWine,
+            region: ''
+        });
+    };
+
+    const resetForm = () => {
         setNewWine({
             name: '',
             vintage: '',
@@ -97,20 +129,14 @@ const WineCellar = () => {
             price: '',
             pairing: '',
             dateStored: '',
-            winemaker: ''
+            winemaker: '',
+            image: ''
         });
     };
 
-    const handleDelete = (id) => {
-        setWines(wines.filter((wine) => wine.id !== id));
-    };
-
-    const handleCountryChange = (e) => {
-        setSelectedCountry(e.target.value);
-        setNewWine({
-            ...newWine,
-            region: ''
-        });
+    const startEditing = (wine) => {
+        setNewWine(wine);
+        setEditingWineId(wine.id);
     };
 
     return (
@@ -158,36 +184,66 @@ const WineCellar = () => {
                     ))}
                 </select>
 
-                <input name="quantity" value={newWine.quantity} onChange={handleChange} placeholder="Menge (positiv zum Hinzufügen, negativ zum Entfernen)" required />
+                <input name="quantity" value={newWine.quantity} onChange={handleChange} placeholder="Menge" required />
                 <input name="price" value={newWine.price} onChange={handleChange} placeholder="Preis" />
 
                 {/* Eingabefeld für den Einlagerungszeitpunkt */}
                 <input type="datetime-local" name="dateStored" value={newWine.dateStored} onChange={handleChange} required />
 
-                <button type="submit" className="add-button">Wein hinzufügen / aktualisieren</button>
+                {/* Eingabefeld für Bild-Upload */}
+                <input type="file" accept="image/*" onChange={handleImageChange} />
+
+                <button type="submit" className="add-button">
+                    {editingWineId ? 'Aktualisieren' : 'Neuen Wein hinzufügen'}
+                </button>
             </form>
 
-        <div className="wine-list">
-        {wines.map((wine) => (
-          <div key={wine.id} className="wine-card">
-            <h2>{wine.name} ({wine.vintage})</h2>
-            <div className="wine-details">
-              <span>Winzer: {wine.winemaker}</span>
-              <span>Weinsorte: {wine.wineType}</span>
-              <span>Sorte: {wine.varietal}</span>
-              <span>Region: {wine.region}, {wine.country}</span>
-              <span>Passt zu: {wine.pairing}</span>
-              <span>Menge: {wine.quantity}</span>
-              <span>Preis: {wine.price} €</span>
-              <span>Gelagert seit: {wine.dateStored}</span>
+            <div className="wine-list">
+                {wines.map((wine) => (
+                    <div key={wine.id} className="wine-card">
+                        {editingWineId === wine.id ? (
+                            <div>
+                                <img src={wine.image} alt={wine.name} style={{ width: '100px', height: 'auto' }} />
+                                <h2>{wine.name} ({wine.vintage})</h2>
+                                <div className="wine-details">
+                                    <span>Winzer: {wine.winemaker}</span>
+                                    <span>Weinsorte: {wine.wineType}</span>
+                                    <span>Sorte: {wine.varietal}</span>
+                                    <span>Region: {wine.region}, {wine.country}</span>
+                                    <span>Passt zu: {wine.pairing}</span>
+                                    <span>Menge: {wine.quantity}</span>
+                                    <span>Preis: {wine.price} €</span>
+                                    <span>Gelagert seit: {wine.dateStored}</span>
+                                </div>
+                                <div className="wine-actions">
+                                    <button onClick={() => handleDelete(wine.id)}>Löschen</button>
+                                    <button onClick={() => resetForm()}>Abbrechen</button>
+                                </div>
+                            </div>
+                        ) : (
+                            <div>
+                                <img src={wine.image} alt={wine.name} style={{ width: '100px', height: 'auto' }} />
+                                <h2>{wine.name} ({wine.vintage})</h2>
+                                <div className="wine-details">
+                                    <span>Winzer: {wine.winemaker}</span>
+                                    <span>Weinsorte: {wine.wineType}</span>
+                                    <span>Sorte: {wine.varietal}</span>
+                                    <span>Region: {wine.region}</span>
+                                    <span>Passt zu: {wine.pairing}</span>
+                                    <span>Menge: {wine.quantity}</span>
+                                    <span>Preis: {wine.price} €</span>
+                                    <span>Gelagert seit: {wine.dateStored}</span>
+                                </div>
+                                <div className="wine-actions">
+                                    <button onClick={() => startEditing(wine)}>Aktualisieren</button>
+                                    <button onClick={() => handleDelete(wine.id)}>Löschen</button>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                ))}
             </div>
-            <div className="wine-actions">
-              <button onClick={() => handleDelete(wine.id)}>Löschen</button>
-            </div>
-          </div>
-        ))}
         </div>
-    </div>
     );
 };
 
