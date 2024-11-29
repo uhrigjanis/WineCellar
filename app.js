@@ -199,50 +199,52 @@ const WineCellar = () => {
             </form>
 
             <div className="wine-list">
-                {wines.map((wine) => (
-                    <div key={wine.id} className="wine-card">
-                        {editingWineId === wine.id ? (
-                            <div>
-                                <img src={wine.image} alt={wine.name} style={{ width: '100px', height: 'auto' }} />
-                                <h2>{wine.name} ({wine.vintage})</h2>
-                                <div className="wine-details">
-                                    <span>Winzer: {wine.winemaker}</span>
-                                    <span>Weinsorte: {wine.wineType}</span>
-                                    <span>Sorte: {wine.varietal}</span>
-                                    <span>Region: {wine.region}, {wine.country}</span>
-                                    <span>Passt zu: {wine.pairing}</span>
-                                    <span>Menge: {wine.quantity}</span>
-                                    <span>Preis: {wine.price} €</span>
-                                    <span>Gelagert seit: {wine.dateStored}</span>
-                                </div>
-                                <div className="wine-actions">
-                                    <button onClick={() => handleDelete(wine.id)}>Löschen</button>
-                                    <button onClick={() => resetForm()}>Abbrechen</button>
-                                </div>
-                            </div>
-                        ) : (
-                            <div>
-                                <img src={wine.image} alt={wine.name} style={{ width: '100px', height: 'auto' }} />
-                                <h2>{wine.name} ({wine.vintage})</h2>
-                                <div className="wine-details">
-                                    <span>Winzer: {wine.winemaker}</span>
-                                    <span>Weinsorte: {wine.wineType}</span>
-                                    <span>Sorte: {wine.varietal}</span>
-                                    <span>Region: {wine.region}</span>
-                                    <span>Passt zu: {wine.pairing}</span>
-                                    <span>Menge: {wine.quantity}</span>
-                                    <span>Preis: {wine.price} €</span>
-                                    <span>Gelagert seit: {wine.dateStored}</span>
-                                </div>
-                                <div className="wine-actions">
-                                    <button onClick={() => startEditing(wine)}>Aktualisieren</button>
-                                    <button onClick={() => handleDelete(wine.id)}>Löschen</button>
-                                </div>
-                            </div>
-                        )}
-                    </div>
-                ))}
+    {wines.map((wine) => (
+        <div key={wine.id} className="wine-card">
+            {/* Das Bild wird links angezeigt */}
+            <img src={wine.image} alt={wine.name} className="wine-image" />
+
+            {/* Details und Aktionen werden rechts angezeigt */}
+            <div className="wine-details">
+                {editingWineId === wine.id ? (
+                    <React.Fragment>
+                        <h2>{wine.name} ({wine.vintage})</h2>
+                        <span>Winzer: {wine.winemaker}</span>
+                        <span>Weinsorte: {wine.wineType}</span>
+                        <span>Sorte: {wine.varietal}</span>
+                        <span>Region: {wine.region}, {wine.country}</span>
+                        <span>Passt zu: {wine.pairing}</span>
+                        <span>Menge: {wine.quantity}</span>
+                        <span>Preis: {wine.price} €</span>
+                        <span>Gelagert seit: {wine.dateStored}</span>
+                        <div className="wine-actions">
+                            <button onClick={() => handleDelete(wine.id)}>Löschen</button>
+                            <button onClick={() => resetForm()}>Abbrechen</button>
+                        </div>
+                    </React.Fragment>
+                ) : (
+                    <React.Fragment>
+                        <h2>{wine.name} ({wine.vintage})</h2>
+                        <span>Winzer: {wine.winemaker}</span>
+                        <span>Weinsorte: {wine.wineType}</span>
+                        <span>Sorte: {wine.varietal}</span>
+                        <span>Region: {wine.region}, {wine.country}</span>
+                        <span>Passt zu: {wine.pairing}</span>
+                        <span>Menge: {wine.quantity}</span>
+                        <span>Preis: {wine.price} €</span>
+                        <span>Gelagert seit: {wine.dateStored}</span>
+                        <div className="wine-actions">
+                            <button onClick={() => startEditing(wine)}>Aktualisieren</button>
+                            <button onClick={() => handleDelete(wine.id)}>Löschen</button>
+                        </div>
+                    </React.Fragment>
+                )}
             </div>
+        </div>
+    ))}
+</div>
+
+
         </div>
     );
 };

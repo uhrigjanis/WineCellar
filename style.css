@@ -29,40 +29,41 @@ h1 {
 .wine-list {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 20px;
-}
-
-/* Wine Card */
-.wine-card {
-  background-color: #EDF1EF;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  padding: 20px;
-  display: flex;
-  align-items: flex-start;
-  transition: transform 0.3s;
+  gap: 1em;
 }
 
 .wine-card:hover {
-  transform: translateY(-5px);
+  transform: translateY(-1px);
 }
 
-/* Wine Card Image Styling */
-.wine-card img.wine-image {
-  width: 150px;
-  height: auto;
+
+/* wine-card new try */
+.wine-card {
+  display: flex; /* Elemente horizontal nebeneinander */
+  flex-direction: row; /* Bild links, Details rechts */
+  align-items: flex-end; /* Vertikale Ausrichtung oben */
+  gap: 2em; /* Abstand zwischen Bild und Details */
+  padding: 20px;
+  background-color: #fefefe;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  transition: box-shadow 0.3s ease;
+}
+
+.wine-card img {
+  width: 100px; /* Festgelegte Breite des Bildes */
+  height: auto; /* Proportionen beibehalten */
   border-radius: 5px;
-  margin-right: 20px;
-  flex-shrink: 0;
 }
 
-/* Wine Details Positioned to the Right */
 .wine-details {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+  flex: 1; /* Nimmt den verbleibenden Platz ein */
+  display: flex; /* Ermöglicht vertikales Anordnen von Details */
+  flex-direction: column; /* Titel, Beschreibung, Bewertung untereinander */
+  gap: 10px; /* Abstand zwischen Details */
 }
+
 
 /* Wine Card Title */
 .wine-card h2 {
@@ -106,7 +107,7 @@ h1 {
   }
 
   .wine-card img.wine-image {
-    margin: 0 0 10px;
+    margin-bottom: 15px;
     max-width: 100%;
   }
 
