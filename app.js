@@ -65,44 +65,43 @@ const WineCellar = () => {
     };
 
     const handleSubmit = (e) => {
-        e.preventDefault();
-        if (!newWine.name || !newWine.vintage || !newWine.wineType || !newWine.quantity || !newWine.region || !newWine.pairing || !newWine.dateStored || !newWine.winemaker) {
-            alert('Bitte füllen Sie alle erforderlichen Felder aus!');
-            return;
-        }
+    e.preventDefault();
+    if (!newWine.name || !newWine.vintage || !newWine.wineType || !newWine.quantity || !newWine.region || !newWine.pairing || !newWine.dateStored || !newWine.winemaker) {
+        alert('Bitte füllen Sie alle erforderlichen Felder aus!');
+        return;
+    }
 
-        const existingWineIndex = wines.findIndex(wine => wine.id === editingWineId);
+    const existingWineIndex = wines.findIndex(wine => wine.id === editingWineId);
 
-        if (existingWineIndex !== -1) {
-            const updatedWines = wines.map((wine) => {
-                if (wine.id === editingWineId) {
-                    const updatedQuantity = parseInt(wine.quantity) + parseInt(newWine.quantity);
-                    if (updatedQuantity <= 0) {
-                        return null; // Null zurückgeben, wenn die Menge nicht positiv ist
-                    }
-                    return {
-                        ...wine,
-                        ...newWine, // Alle neuen Wein-Daten aktualisieren
-                        quantity: updatedQuantity
-                    };
-                }
-                return wine;
-            }).filter(Boolean);
+    if (existingWineIndex !== -1) {
+        // Update existing wine directly
+        const updatedWines = wines.map((wine) => {
+            if (wine.id === editingWineId) {
+                return {
+                    ...wine,
+                    ...newWine, // Update all fields
+                    quantity: parseInt(newWine.quantity) // Directly set the new quantity
+                };
+            }
+            return wine;
+        });
 
-            setWines(updatedWines);
-            alert('Weinmenge wurde aktualisiert.');
-        } else {
-            const wineToAdd = {
-                ...newWine,
-                id: Date.now(),
-            };
-            setWines([...wines, wineToAdd]);
-            alert('Neuer Wein wurde hinzugefügt.');
-        }
+        setWines(updatedWines);
+        alert('Weinmenge wurde aktualisiert.');
+    } else {
+        // Add new wine if it doesn't exist
+        const wineToAdd = {
+            ...newWine,
+            id: Date.now(),
+        };
+        setWines([...wines, wineToAdd]);
+        alert('Neuer Wein wurde hinzugefügt.');
+    }
 
-        resetForm();
-        setEditingWineId(null); // Zurücksetzen der Bearbeitungs-ID
-    };
+    resetForm();
+    setEditingWineId(null); // Reset editing ID
+};
+
 
     const handleDelete = (id) => {
         const updatedWines = wines.filter((wine) => wine.id !== id);
