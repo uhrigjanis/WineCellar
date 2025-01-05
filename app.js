@@ -87,7 +87,7 @@ const WineCellar = () => {
         });
 
         setWines(updatedWines);
-        alert('Weinmenge wurde aktualisiert.');
+        alert('Wein wurde aktualisiert.');
     } else {
         // Add new wine if it doesn't exist
         const wineToAdd = {
@@ -165,6 +165,11 @@ const WineCellar = () => {
                     <option value="Italy">Italien</option>
                     <option value="Austria">Österreich</option>
                     <option value="Spain">Spanien</option>
+                    <option value="Slovakia">Slowakei</option>
+                    <option value="Czechia">Tschechien</option>
+                    <option value="SouthAfrica">Südafrika</option>
+                    <option value="Australia">Australien</option>
+                    <option value="NewZealand">Neuseeland</option>
                 </select>
 
                 {/* Dropdown für Anbaugebiet */}
